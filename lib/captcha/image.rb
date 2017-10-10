@@ -1,5 +1,3 @@
-require 'RMagick'
-
 module Captcha
   class Image
 
@@ -8,15 +6,15 @@ module Captcha
 
     def initialize(o)
       generate_code o
-    
+
       canvas = Magick::Image.new(o[:dimensions][:width], o[:dimensions][:height]) {
         self.background_color = o[:colors][:background]
       }
-  
+
       text = Magick::Draw.new
       text.font = File.expand_path o[:ttf]
       text.pointsize = o[:letters][:points]
-  
+
       cur = 0
       @code.each { |c|
         text.annotate(canvas, 0, 0, cur, o[:letters][:baseline], c) {
@@ -24,16 +22,16 @@ module Captcha
         }
         cur += o[:letters][:width]
       }
-  
+
       w = o[:wave][:wavelength]
       canvas = canvas.wave(o[:wave][:amplitude], rand(w.last - w.first) + w.first)
       canvas = canvas.implode(o[:implode])
-  
-      @code = @code.to_s
+
+      @code = @code.join
       @data = canvas.to_blob { self.format = "JPG" }
       canvas.destroy!
     end
-  
+
     private
 
     def generate_code(o)

@@ -1,15 +1,15 @@
 module Captcha
   class Config
-    
-    if defined?(RAILS_ENV)
-      PRODUCTION = RAILS_ENV == 'production' || RAILS_ENV == 'staging'
-      ROOT = "#{RAILS_ROOT}/"
+
+    if defined?(Rails)
+      PRODUCTION = Rails.env.production? || Rails.env.staging?
+      ROOT = "#{Rails.root}/"
     else
       PRODUCTION = false
       ROOT = ""
     end
     ONE_DAY = 24 * 60 * 60
-    
+
     @@options = {
       :password => 'captcha',
       :colors => {
@@ -46,38 +46,47 @@ module Captcha
         :wavelength => (40..70),
         # distance between peak and valley of sin wave (px)
         :amplitude => 3
-      }
+      },
+      :update_files_time => 15.minutes.ago
     }
-    
+
     def initialize(options={})
       @@options.merge!(options)
     end
-    
+
+    @@captchas = {time: 1.month.ago, files: []}
+
     def self.captchas
-      Dir["#{@@options[:destination]}/*.jpg"]
+      if @@captchas[:files].blank? || @@captchas[:time] < @@options[:update_files_time].since
+        @@captchas[:files] = Dir["#{@@options[:destination]}/*.jpg"]
+        @@captchas[:time] = Time.now
+      end
+
+      @@captchas[:files]
     end
-    
+
+    def self.remove_old_capchas
+      @@captchas[:files].each do |captcha|
+        FileUtils.rm_f captcha
+      end
+    end
+
     def self.codes
       self.captchas.collect do |f|
         File.basename f, '.jpg'
       end
     end
-    
+
     def self.exists?(code)
       File.exists?("#{@@options[:destination]}/#{code}.jpg")
     end
-  
+
     def self.options
       @@options
     end
-  
+
     def self.last_modified
-      file = self.captchas.first
-      if file && File.exists?(file)
-        File.mtime(file)
-      else
-        nil
-      end
+      @@captchas[:time]
     end
   end
 end

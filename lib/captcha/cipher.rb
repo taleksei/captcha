@@ -1,11 +1,8 @@
-require 'openssl'
-require 'digest/sha1'
-
 module Captcha
   class Cipher
     @@key = Digest::SHA1.hexdigest(Config.options[:password])
     @@iv = 'captchas'*2
-    
+
     def self.encrypt(text)
       # Encrypt
       cipher = OpenSSL::Cipher::Cipher.new("aes-256-cbc")
@@ -25,7 +22,7 @@ module Captcha
       end
       encrypted.join('_')
     end
-    
+
     def self.decrypt(text)
       # Decode chr coded string
       encrypted = text.split('_').collect do |x|

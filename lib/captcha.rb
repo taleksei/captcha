@@ -1,5 +1,14 @@
-require File.dirname(__FILE__) + "/captcha/action.rb"
-require File.dirname(__FILE__) + "/captcha/image.rb"
-require File.dirname(__FILE__) + "/captcha/config.rb"
-require File.dirname(__FILE__) + "/captcha/cipher.rb"
-require File.dirname(__FILE__) + "/captcha/generator.rb"
+require 'rails'
+require 'openssl'
+require 'digest/sha1'
+require 'RMagick'
+
+require 'captcha/config'
+require 'captcha/cipher'
+require 'captcha/generator'
+require 'captcha/image'
+require 'captcha/model'
+require 'captcha/action'
+
+require 'captcha/railtie'
+require 'captcha/version'
