@@ -1,1 +1,6 @@
 .DS_Store
+/spec/internal/test
+coverage/
+.bundle/
+Gemfile.lock
+gemfiles/
