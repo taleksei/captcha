@@ -16,26 +16,9 @@ Gem::Specification.new do |spec|
 
   spec.has_rdoc = false
 
-  # = MANIFEST =
-  spec.files = %w[
-    MIT-LICENSE
-    README.markdown
-    Rakefile
-    captcha.gemspec
-    init.rb
-    lib/captcha.rb
-    lib/captcha/action.rb
-    lib/captcha/cipher.rb
-    lib/captcha/config.rb
-    lib/captcha/generator.rb
-    lib/captcha/image.rb
-    lib/captcha/model.rb
-    resources/captcha.ttf
-    spec/lib/captcha_spec.rb
-    spec/spec.opts
-    spec/spec_helper.rb
-    tasks/captcha.rake
-  ]
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ["lib"]
 
   spec.add_dependency 'rails', '>= 3.2'
   spec.add_dependency 'rmagick', '>=2.9.2'

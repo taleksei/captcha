@@ -4,3 +4,4 @@ coverage/
 .bundle/
 Gemfile.lock
 gemfiles/
+pkg/
