@@ -47,17 +47,17 @@ module Captcha
         # distance between peak and valley of sin wave (px)
         :amplitude => 3
       },
-      :update_files_time => 15.minutes.ago
+      :update_files_time => 15.minutes
     }
 
     def initialize(options={})
       @@options.merge!(options)
     end
 
-    @@captchas = {time: 1.month.ago, files: []}
+    @@captchas = {}
 
     def self.captchas
-      if @@captchas[:files].blank? || @@captchas[:time] < @@options[:update_files_time].since
+      if @@captchas[:files].blank? || @@captchas[:time] < @@options[:update_files_time].ago
         @@captchas[:files] = Dir["#{@@options[:destination]}/*.jpg"]
         @@captchas[:time] = Time.now
       end
@@ -66,13 +66,13 @@ module Captcha
     end
 
     def self.remove_old_capchas
-      @@captchas[:files].each do |captcha|
+      captchas.each do |captcha|
         FileUtils.rm_f captcha
       end
     end
 
     def self.codes
-      self.captchas.collect do |f|
+      captchas.collect do |f|
         File.basename f, '.jpg'
       end
     end
