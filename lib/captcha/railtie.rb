@@ -1,5 +1,9 @@
 module Captcha
   class Railtie < Rails::Railtie
+    rake_tasks do
+      load "#{File.dirname(__FILE__)}/../tasks/captcha.rake"
+    end
+
     initializer "captcha" do |app|
       if defined?(Rails) && File.exists?("#{Rails.root}/lib/captcha_config.rb")
         require "#{Rails.root}/lib/captcha_config"
