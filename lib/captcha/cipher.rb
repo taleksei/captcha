@@ -1,6 +1,6 @@
 module Captcha
   class Cipher
-    @@key = Digest::SHA1.hexdigest(Config.options[:password])
+    @@key = Digest::MD5.hexdigest(Config.options[:password])
     @@iv = 'captchas'*2
 
     def self.encrypt(text)
